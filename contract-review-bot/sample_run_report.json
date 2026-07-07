@@ -1,0 +1,119 @@
+{
+  "contract_type": "Mutual Non-Disclosure Agreement",
+  "parties": [
+    {
+      "name": "Acme Robotics Inc.",
+      "role": "a Delaware corporation"
+    },
+    {
+      "name": "Beta Logistics LLC",
+      "role": "a California limited liability company"
+    }
+  ],
+  "clauses": [
+    {
+      "type": "term_and_termination",
+      "present": true,
+      "quoted_text": "This Agreement shall remain in effect for a period of two (2) years from the Effective Date, unless earlier terminated by either party upon thirty (30) days written notice.",
+      "location": "3. Term",
+      "confidence": "high"
+    },
+    {
+      "type": "payment_terms",
+      "present": false,
+      "quoted_text": null,
+      "location": null,
+      "confidence": "low"
+    },
+    {
+      "type": "liability_and_indemnification",
+      "present": true,
+      "quoted_text": "Beta agrees to indemnify, defend, and hold harmless Acme from any and all claims, damages, losses, and expenses (including attorneys' fees) arising out of or related to Beta's breach of this Agreement, without any limitation on the amount of such liability.",
+      "location": "4. Indemnification",
+      "confidence": "high"
+    },
+    {
+      "type": "confidentiality",
+      "present": true,
+      "quoted_text": "Each party agrees to hold in strict confidence all non-public information disclosed by the other party, whether oral or written, and to use such information solely for the purpose of evaluating the potential business relationship.",
+      "location": "2. Confidential Information",
+      "confidence": "high"
+    },
+    {
+      "type": "intellectual_property",
+      "present": true,
+      "quoted_text": "Nothing in this Agreement shall be construed as granting any license or rights to either party's intellectual property.",
+      "location": "7. No License",
+      "confidence": "high"
+    },
+    {
+      "type": "non_compete_non_solicit",
+      "present": false,
+      "quoted_text": null,
+      "location": null,
+      "confidence": "low"
+    },
+    {
+      "type": "dispute_resolution_and_governing_law",
+      "present": true,
+      "quoted_text": "This Agreement shall be governed by the laws of the State of Delaware. Any disputes arising under this Agreement shall be resolved exclusively in the state or federal courts located in Delaware.",
+      "location": "5. Governing Law",
+      "confidence": "high"
+    },
+    {
+      "type": "auto_renewal",
+      "present": true,
+      "quoted_text": "This Agreement shall automatically renew for successive one (1) year terms unless either party provides written notice of non-renewal at least sixty (60) days prior to the end of the then-current term.",
+      "location": "3. Term",
+      "confidence": "high"
+    },
+    {
+      "type": "force_majeure",
+      "present": false,
+      "quoted_text": null,
+      "location": null,
+      "confidence": "low"
+    }
+  ],
+  "risks": [
+    {
+      "related_clause": "liability_and_indemnification",
+      "quoted_text": "without any limitation on the amount of such liability",
+      "issue": "uncapped/unlimited liability",
+      "severity": "high",
+      "suggested_action": "This clause may warrant review by a licensed attorney because it could lead to significant financial exposure for Beta."
+    },
+    {
+      "related_clause": "auto_renewal",
+      "quoted_text": "unless either party provides written notice of non-renewal at least sixty (60) days prior to the end of the then-current term",
+      "issue": "auto-renewal without adequate notice",
+      "severity": "medium",
+      "suggested_action": "Consider negotiating a longer notice period to ensure sufficient time for review and decision-making."
+    }
+  ],
+  "obligations_summary": [
+    {
+      "party": "Acme Robotics Inc.",
+      "obligations": [
+        "Hold in strict confidence all non-public information disclosed by Beta Logistics LLC",
+        "Use disclosed information solely for evaluating the potential business relationship"
+      ]
+    },
+    {
+      "party": "Beta Logistics LLC",
+      "obligations": [
+        "Indemnify, defend, and hold harmless Acme Robotics Inc. from claims arising out of Beta's breach of the Agreement",
+        "Hold in strict confidence all non-public information disclosed by Acme Robotics Inc.",
+        "Use disclosed information solely for evaluating the potential business relationship",
+        "Provide written notice of non-renewal at least sixty (60) days prior to the end of the then-current term if Beta does not want the Agreement to automatically renew"
+      ]
+    }
+  ],
+  "missing_standard_clauses": [
+    "payment_terms",
+    "non_compete_non_solicit",
+    "force_majeure"
+  ],
+  "executive_summary": "{\n  \"summary\": \"This Mutual Non-Disclosure Agreement between Acme Robotics Inc. and Beta Logistics LLC has several key clauses, including term and termination, liability and indemnification, confidentiality, and dispute resolution. High-severity risks include uncapped liability for Beta and auto-renewal without adequate notice. Critically missing clauses include payment terms, non-compete/non-solicit, and force majeure. These clauses may warrant review by a licensed attorney to ensure the agreement adequately protects the interests of both parties.\"\n}",
+  "disclaimer": "This analysis is generated by an AI system for informational purposes only and does not constitute legal advice. Consult a licensed attorney before making decisions based on this contract."
+}

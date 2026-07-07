@@ -1,0 +1,34 @@
+MUTUAL NON-DISCLOSURE AGREEMENT
+
+This Mutual Non-Disclosure Agreement ("Agreement") is entered into as of January 1, 2026,
+by and between Acme Robotics Inc., a Delaware corporation ("Acme"), and Beta Logistics LLC,
+a California limited liability company ("Beta").
+
+1. Purpose. The parties wish to explore a potential business relationship and, in
+connection therewith, may disclose certain confidential information to each other.
+
+2. Confidential Information. Each party agrees to hold in strict confidence all
+non-public information disclosed by the other party, whether oral or written, and to
+use such information solely for the purpose of evaluating the potential business
+relationship.
+
+3. Term. This Agreement shall remain in effect for a period of two (2) years from the
+Effective Date, unless earlier terminated by either party upon thirty (30) days written
+notice. This Agreement shall automatically renew for successive one (1) year terms
+unless either party provides written notice of non-renewal at least sixty (60) days
+prior to the end of the then-current term.
+
+4. Indemnification. Beta agrees to indemnify, defend, and hold harmless Acme from any
+and all claims, damages, losses, and expenses (including attorneys' fees) arising out
+of or related to Beta's breach of this Agreement, without any limitation on the amount
+of such liability. Acme shall have no indemnification obligations under this Agreement.
+
+5. Governing Law. This Agreement shall be governed by the laws of the State of Delaware.
+Any disputes arising under this Agreement shall be resolved exclusively in the state
+or federal courts located in Delaware.
+
+6. Return of Materials. Upon termination of this Agreement, each party shall return or
+destroy all confidential materials received from the other party.
+
+7. No License. Nothing in this Agreement shall be construed as granting any license or
+rights to either party's intellectual property.
