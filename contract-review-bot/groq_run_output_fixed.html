@@ -7,13 +7,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <style>
       :root{
-        --bg1:#f8fafc; --bg2:#e2e8f0; --card:#111827; --panel:#1e2937;
+        --bg1:#ffffff; --bg2:#f8fafc; --card:#ffffff; --panel:#f1f5f9;
         --accent:#38bdf8; --accent-2:#8b5cf6; --muted:#334155; --success:#16a34a; --danger:#dc2626; --warn:#f59e0b;
       }
       html,body{height:100%;}
       body{
         margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-        background:linear-gradient(180deg,var(--bg1),var(--bg2)); color:#0f172a; -webkit-font-smoothing:antialiased;
+        background:linear-gradient(180deg,var(--bg1),var(--bg2)); color:#0b1723; -webkit-font-smoothing:antialiased;
         padding:32px; box-sizing:border-box;
       }
       .container{max-width:1120px;margin:0 auto;}
@@ -24,10 +24,10 @@
 
       .grid{display:flex;flex-direction:column;gap:22px}
       aside{width:100%;}
-      .card{background:#f8fafc;border-radius:24px;padding:26px;box-shadow:0 22px 50px rgba(148,163,184,0.16);border:1px solid rgba(148,163,184,0.24);}
+      .card{background:var(--card);border-radius:24px;padding:26px;box-shadow:0 22px 50px rgba(148,163,184,0.06);border:1px solid rgba(148,163,184,0.08);} 
 
       .section-title{font-size:14px;color:#0f172a;margin-bottom:10px;font-weight:700;letter-spacing:0.02em}
-      pre.json{background:#e2e8f0;padding:18px;border-radius:14px;color:#0f172a;overflow:auto;font-size:13px;line-height:1.6;min-height:140px}
+      pre.json{background:var(--panel);padding:18px;border-radius:14px;color:#0b1723;overflow:auto;font-size:13px;line-height:1.6;min-height:140px}
 
       .badge{display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.95);color:#0f172a;font-size:13px;font-weight:700;box-shadow:0 10px 24px rgba(15,23,42,0.08)}
 
@@ -35,16 +35,16 @@
       .parties li{margin-bottom:10px}
       .clauses-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
       .missing-clauses, .obligations-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
-      .card{background:#f8fafc;border-radius:24px;padding:26px;box-shadow:0 22px 50px rgba(148,163,184,0.16);min-height:225px;color:#0f172a}
-      aside .card{min-height:180px;color:#0f172a}
-      .card, .card *{color:#0f172a}
+      .card{background:var(--card);border-radius:24px;padding:26px;box-shadow:0 22px 50px rgba(148,163,184,0.06);min-height:225px;color:#0b1723}
+      aside .card{min-height:180px;color:#0b1723}
+      .card, .card *{color:#0b1723}
       .meta{color:#475569}
-      .clause{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;background:rgba(15,23,42,0.04);color:#0f172a}
+      .clause{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;background:rgba(11,23,35,0.04);color:#0b1723}
       .clause .dot{width:10px;height:10px;border-radius:50%;margin-top:6px}
       .sev-high{background:var(--danger)} .sev-med{background:var(--warn)} .sev-low{background:var(--muted)}
       .clause .meta{font-size:12px;color:#475569}
 
-      .risks li{margin-bottom:12px;padding:10px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));}
+      .risks li{margin-bottom:12px;padding:10px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.5));}
       .risk-severity{font-weight:700;padding:4px 8px;border-radius:6px;color:#061025}
       .risk-high{background:var(--danger)} .risk-med{background:var(--warn)} .risk-low{background:var(--success)}
 
@@ -72,15 +72,17 @@
       <div class="grid">
         <main class="card" id="main-card">
           <div class="section-title">Contract Text</div>
-          <textarea id="json-input" rows="8" style="width:100%;border-radius:18px;border:1px solid rgba(148,163,184,0.25);background:#ffffff;color:#0f172a;padding:18px;resize:vertical;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;" placeholder="Paste contract text here to analyze its key clauses and risks."></textarea>
+          <textarea id="json-input" rows="8" style="width:100%;border-radius:18px;border:1px solid rgba(148,163,184,0.25);background:#ffffff;color:#0b1723;padding:18px;resize:vertical;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;" placeholder="Paste contract text here to analyze its key clauses and risks."></textarea>
           <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
             <button id="btn-load-input" class="badge" style="background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;box-shadow:0 10px 25px rgba(251,113,133,0.22);">Analyze Text</button>
+            <button id="btn-demo" class="badge" style="background:linear-gradient(135deg,#10b981,#059669);color:white;box-shadow:0 10px 25px rgba(16,185,129,0.18);">Use Demo Sample</button>
+            <button id="btn-clear" class="badge" style="background:linear-gradient(135deg,#64748b,#475569);color:white;box-shadow:0 10px 25px rgba(71,85,105,0.12);">Clear</button>
             <input id="file-input" type="file" accept="text/plain,.txt" style="display:none" />
             <button id="btn-use-file" class="badge" style="background:linear-gradient(135deg,#f59e0b,#f97316);color:white;box-shadow:0 10px 25px rgba(245,158,11,0.22);">Load Text File</button>
           </div>
 
           <div class="section-title">Executive Summary</div>
-          <div id="exec-summary" style="margin-bottom:16px;color:#0f172a;background:rgba(148,163,184,0.08);padding:20px;border-radius:20px;min-height:120px;box-shadow:inset 0 0 0 1px rgba(148,163,184,0.16);">Sample report summary is displayed using the default data. Paste contract text to analyze its key clauses and risks.</div>
+          <div id="exec-summary" style="margin-bottom:16px;color:#0b1723;background:rgba(148,163,184,0.08);padding:20px;border-radius:20px;min-height:120px;box-shadow:inset 0 0 0 1px rgba(148,163,184,0.16);">Sample report summary is displayed using the default data. Paste contract text to analyze its key clauses and risks.</div>
 
           <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
             <div class="badge" id="parties-count">Parties: —</div>
@@ -207,7 +209,7 @@
           const dot = document.createElement('div'); dot.className='dot ' + (c.present? (c.confidence==='high'? 'sev-high':'sev-med') : 'sev-low');
           const body = document.createElement('div');
           const clauseName = escapeHtml(c.type.replace(/_/g,' ').replace(/\b\w/g, ch => ch.toUpperCase()));
-          body.innerHTML = `<div style="font-weight:700; color:#0f172a">${clauseName}</div><div class="meta">${c.present? 'Present' : 'Not present'} — ${escapeHtml(c.location||'—')}</div><div style="margin-top:6px;color:#0f172a">${c.quoted_text? '"'+escapeHtml(c.quoted_text)+'"' : ''}</div>`;
+          body.innerHTML = `<div style="font-weight:700; color:#0b1723">${clauseName}</div><div class="meta">${c.present? 'Present' : 'Not present'} — ${escapeHtml(c.location||'—')}</div><div style="margin-top:6px;color:#0b1723">${c.quoted_text? '"'+escapeHtml(c.quoted_text)+'"' : ''}</div>`;
           li.appendChild(dot); li.appendChild(body); clausesEl.appendChild(li);
         });
 
@@ -216,7 +218,7 @@
           const li = document.createElement('li');
           const sev = (r.severity||'low').toLowerCase();
           const sevClass = sev==='high'? 'risk-high' : sev==='medium'? 'risk-med' : 'risk-low';
-          li.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div><strong>${escapeHtml(r.issue)}</strong><div class="meta">Related to: ${escapeHtml(r.related_clause)}</div></div><div class="risk-severity ${sevClass}">${escapeHtml(r.severity)}</div></div><div style="margin-top:8px;color:#0f172a">${r.quoted_text? '"'+escapeHtml(r.quoted_text)+'"' : ''}</div><div style="margin-top:8px;color:var(--muted);margin-top:10px">${escapeHtml(r.suggested_action || '')}</div>`;
+          li.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div><strong>${escapeHtml(r.issue)}</strong><div class="meta">Related to: ${escapeHtml(r.related_clause)}</div></div><div class="risk-severity ${sevClass}">${escapeHtml(r.severity)}</div></div><div style="margin-top:8px;color:#0b1723">${r.quoted_text? '"'+escapeHtml(r.quoted_text)+'"' : ''}</div><div style="margin-top:8px;color:var(--muted);margin-top:10px">${escapeHtml(r.suggested_action || '')}</div>`;
           risksEl.appendChild(li);
         });
 
@@ -242,6 +244,30 @@
         rawVisible = !rawVisible;
         rawPanel.style.display = rawVisible ? 'block' : 'none';
         document.getElementById('btn-toggle-raw').textContent = rawVisible ? 'Hide Raw' : 'Show Raw';
+      });
+
+      document.getElementById('btn-demo').addEventListener('click', ()=>{
+        document.getElementById('json-input').value = JSON.stringify(sampleData, null, 2);
+        currentData = sampleData;
+        render(sampleData);
+        execSummaryEl.textContent = 'Loaded demo sample analysis.';
+      });
+
+      document.getElementById('btn-clear').addEventListener('click', ()=>{
+        document.getElementById('json-input').value = '';
+        currentData = null;
+        contractTypeEl.textContent = '—';
+        execSummaryEl.textContent = 'Paste contract text or upload a file, then click Analyze.';
+        partiesEl.innerHTML = '';
+        clausesEl.innerHTML = '';
+        risksEl.innerHTML = '';
+        obligationsEl.innerHTML = '';
+        missingClausesEl.innerHTML = '';
+        rawJsonEl.textContent = '';
+        partiesCountEl.textContent = 'Parties: —';
+        clausesCountEl.textContent = 'Clauses: —';
+        risksCountEl.textContent = 'Risks: —';
+        disclaimerEl.textContent = '';
       });
 
       document.getElementById('btn-copy').addEventListener('click', async ()=>{
