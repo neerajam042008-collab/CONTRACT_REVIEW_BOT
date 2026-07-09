@@ -131,6 +131,8 @@ col1, col2, col3 = st.columns([1,1,1])
 do_review = col1.button("Review contract")
 do_demo = col2.button("Use Demo Sample")
 do_clear = col3.button("Clear")
+# Track whether a recent text change/upload should auto-trigger a review
+auto_flag = st.session_state.pop("auto_review", False)
 
 def render_report(report):
     st.subheader("Executive summary")
@@ -198,6 +200,20 @@ def render_report(report):
         st.json(report)
 
 
+
+def perform_review(text_input):
+    if not os.getenv("GROQ_API_KEY") and not os.getenv("OPENAI_API_KEY"):
+        st.warning("No API key found. Showing demo analysis instead. Set GROQ_API_KEY or OPENAI_API_KEY to run the real pipeline.")
+        render_report(SAMPLE_REPORT)
+    else:
+        with st.spinner("Reviewing contract..."):
+            try:
+                report = review_contract(text_input, doc_id="streamlit-run")
+                st.success("Review completed")
+                render_report(report)
+            except Exception as exc:
+                st.error(f"Review failed: {exc}")
+
 if do_demo:
     # Set a query param and rerun so the textarea is populated with demo text
     set_q = getattr(st, "experimental_set_query_params", None)
@@ -229,25 +245,11 @@ elif do_clear:
         except Exception:
             pass
 
-def perform_review(text_input):
-    if not os.getenv("GROQ_API_KEY") and not os.getenv("OPENAI_API_KEY"):
-        st.warning("No API key found. Showing demo analysis instead. Set GROQ_API_KEY or OPENAI_API_KEY to run the real pipeline.")
-        render_report(SAMPLE_REPORT)
-    else:
-        with st.spinner("Reviewing contract..."):
-            try:
-                report = review_contract(text_input, doc_id="streamlit-run")
-                st.success("Review completed")
-                render_report(report)
-            except Exception as exc:
-                st.error(f"Review failed: {exc}")
-
 elif do_review:
     perform_review(st.session_state.get("contract_text", ""))
 
 # If the text area changed (paste) or a file was uploaded, auto-review
-auto_flag = st.session_state.pop("auto_review", False)
-if auto_flag and st.session_state.get("contract_text", "").strip():
+elif auto_flag and st.session_state.get("contract_text", "").strip():
     perform_review(st.session_state.get("contract_text", ""))
 
 else:
