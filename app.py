@@ -187,10 +187,13 @@ if do_demo:
             set_q(demo="1")
         except Exception:
             pass
-    else:
-        # no-op if not available
-        pass
-    st.experimental_rerun()
+    # Safe rerun call
+    rerun = getattr(st, "experimental_rerun", None)
+    if callable(rerun):
+        try:
+            rerun()
+        except Exception:
+            pass
 
 elif do_clear:
     set_q = getattr(st, "experimental_set_query_params", None)
@@ -199,9 +202,13 @@ elif do_clear:
             set_q()
         except Exception:
             pass
-    else:
-        pass
-    st.experimental_rerun()
+    # Safe rerun call
+    rerun = getattr(st, "experimental_rerun", None)
+    if callable(rerun):
+        try:
+            rerun()
+        except Exception:
+            pass
 
 elif do_review:
     # If no keys are configured, fall back to demo report but warn the user.
