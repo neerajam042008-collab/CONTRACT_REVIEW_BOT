@@ -83,8 +83,19 @@ st.markdown(
 )
 
 # Determine initial text from query params (supports demo flag)
-q = st.experimental_get_query_params()
-initial_text = SAMPLE_TEXT if q.get("demo") == ["1"] else SAMPLE_TEXT
+# Use safe getattr fallback because some Streamlit deployments may not expose
+# the experimental query API the same way.
+get_q = getattr(st, "experimental_get_query_params", None)
+if callable(get_q):
+    try:
+        q = get_q()
+    except Exception:
+        q = {}
+else:
+    q = {}
+
+# If demo flag is present, prefill with SAMPLE_TEXT; otherwise leave empty.
+initial_text = SAMPLE_TEXT if q.get("demo") == ["1"] else ""
 
 text_input = st.text_area("Contract text", value=initial_text, height=300)
 
@@ -170,11 +181,26 @@ def render_report(report):
 
 if do_demo:
     # Set a query param and rerun so the textarea is populated with demo text
-    st.experimental_set_query_params(demo="1")
+    set_q = getattr(st, "experimental_set_query_params", None)
+    if callable(set_q):
+        try:
+            set_q(demo="1")
+        except Exception:
+            pass
+    else:
+        # no-op if not available
+        pass
     st.experimental_rerun()
 
 elif do_clear:
-    st.experimental_set_query_params()
+    set_q = getattr(st, "experimental_set_query_params", None)
+    if callable(set_q):
+        try:
+            set_q()
+        except Exception:
+            pass
+    else:
+        pass
     st.experimental_rerun()
 
 elif do_review:
