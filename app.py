@@ -70,17 +70,28 @@ SAMPLE_REPORT = {
 }
 
 
-# Use session state to keep text and report across interactions
-# Avoid assigning into `st.session_state` at import time (Streamlit may raise),
-# instead read with .get() to provide defaults and only set state inside
-# interaction branches.
-text_input = st.text_area("Contract text", value=st.session_state.get("contract_text", SAMPLE_TEXT), key="contract_text", height=300)
+# Lightweight CSS to improve visuals
+st.markdown(
+    """
+    <style>
+    .report-card {background:#ffffff;padding:18px;border-radius:12px;box-shadow:0 6px 24px rgba(15,23,42,0.06);}
+    .muted {color:#475569}
+    .badge {display:inline-block;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#0f172a;font-weight:700}
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Determine initial text from query params (supports demo flag)
+q = st.experimental_get_query_params()
+initial_text = SAMPLE_TEXT if q.get("demo") == ["1"] else SAMPLE_TEXT
+
+text_input = st.text_area("Contract text", value=initial_text, height=300)
 
 uploaded_file = st.file_uploader("Or upload a text file", type=["txt", "md"])
 if uploaded_file is not None:
     try:
-        st.session_state.contract_text = uploaded_file.read().decode("utf-8")
-        text_input = st.session_state.contract_text
+        text_input = uploaded_file.read().decode("utf-8")
     except UnicodeDecodeError:
         st.error("Could not read the uploaded file as UTF-8 text.")
         st.stop()
@@ -158,33 +169,27 @@ def render_report(report):
 
 
 if do_demo:
-    st.session_state.contract_text = SAMPLE_TEXT
-    st.session_state.report = SAMPLE_REPORT
-    render_report(SAMPLE_REPORT)
+    # Set a query param and rerun so the textarea is populated with demo text
+    st.experimental_set_query_params(demo="1")
+    st.experimental_rerun()
 
 elif do_clear:
-    st.session_state.contract_text = ""
-    st.session_state.report = None
+    st.experimental_set_query_params()
     st.experimental_rerun()
 
 elif do_review:
     # If no keys are configured, fall back to demo report but warn the user.
     if not os.getenv("GROQ_API_KEY") and not os.getenv("OPENAI_API_KEY"):
         st.warning("No API key found. Showing demo analysis instead. Set GROQ_API_KEY or OPENAI_API_KEY to run the real pipeline.")
-        st.session_state.report = SAMPLE_REPORT
         render_report(SAMPLE_REPORT)
     else:
         with st.spinner("Reviewing contract..."):
             try:
-                report = review_contract(st.session_state.contract_text, doc_id="streamlit-run")
-                st.session_state.report = report
+                report = review_contract(text_input, doc_id="streamlit-run")
                 st.success("Review completed")
                 render_report(report)
             except Exception as exc:
                 st.error(f"Review failed: {exc}")
 
 else:
-    if st.session_state.get("report"):
-        render_report(st.session_state.get("report"))
-    else:
-        st.info("Paste contract text or upload a file, then click Review contract, or click Use Demo Sample to load a demo report.")
+    st.info("Paste contract text or upload a file, then click Review contract, or click Use Demo Sample to load a demo report.")
