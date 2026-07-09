@@ -71,12 +71,10 @@ SAMPLE_REPORT = {
 
 
 # Use session state to keep text and report across interactions
-if "contract_text" not in st.session_state:
-    st.session_state.contract_text = SAMPLE_TEXT
-if "report" not in st.session_state:
-    st.session_state.report = None
-
-text_input = st.text_area("Contract text", value=st.session_state.contract_text, key="contract_text", height=300)
+# Avoid assigning into `st.session_state` at import time (Streamlit may raise),
+# instead read with .get() to provide defaults and only set state inside
+# interaction branches.
+text_input = st.text_area("Contract text", value=st.session_state.get("contract_text", SAMPLE_TEXT), key="contract_text", height=300)
 
 uploaded_file = st.file_uploader("Or upload a text file", type=["txt", "md"])
 if uploaded_file is not None:
@@ -186,7 +184,7 @@ elif do_review:
                 st.error(f"Review failed: {exc}")
 
 else:
-    if st.session_state.report:
-        render_report(st.session_state.report)
+    if st.session_state.get("report"):
+        render_report(st.session_state.get("report"))
     else:
         st.info("Paste contract text or upload a file, then click Review contract, or click Use Demo Sample to load a demo report.")
