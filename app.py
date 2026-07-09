@@ -4,7 +4,13 @@ import sys
 from pathlib import Path
 
 import streamlit as st
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except Exception:
+    # If python-dotenv isn't installed in the environment (e.g. on Streamlit Cloud),
+    # provide a no-op fallback so the app can still run using real environment vars
+    def load_dotenv(*args, **kwargs):
+        return False
 
 BASE_DIR = Path(__file__).resolve().parent
 PROJECT_DIR = BASE_DIR / "contract-review-bot"
