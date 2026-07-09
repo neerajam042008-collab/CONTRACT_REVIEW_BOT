@@ -96,10 +96,67 @@ do_clear = col3.button("Clear")
 def render_report(report):
     st.subheader("Executive summary")
     st.write(report.get("executive_summary", ""))
+
+    st.subheader("Parties")
+    parties = report.get("parties", [])
+    if parties:
+        for p in parties:
+            name = p.get("name", "")
+            role = p.get("role", "")
+            st.markdown(f"- **{name}** — {role}")
+    else:
+        st.write("No parties extracted.")
+
+    st.subheader("Clauses")
+    clauses = report.get("clauses", [])
+    if clauses:
+        for c in clauses:
+            ctype = c.get("type", "").replace("_", " ").title()
+            present = "Present" if c.get("present") else "Missing"
+            location = c.get("location") or "—"
+            st.markdown(f"- **{ctype}** ({present}) — {location}")
+            quoted = c.get("quoted_text")
+            if quoted:
+                st.markdown(f"    > {quoted}")
+    else:
+        st.write("No clauses found.")
+
     st.subheader("Risks")
-    st.json(report.get("risks", []))
-    st.subheader("Full JSON report")
-    st.json(report)
+    risks = report.get("risks", [])
+    if risks:
+        for r in risks:
+            issue = r.get("issue") or r.get("related_clause") or "Unknown issue"
+            severity = r.get("severity", "")
+            st.markdown(f"- **{issue}** — Severity: {severity}")
+            if r.get("quoted_text"):
+                st.markdown(f"    > {r.get('quoted_text')}")
+            if r.get("suggested_action"):
+                st.markdown(f"    Suggested action: {r.get('suggested_action')}")
+    else:
+        st.write("No risks identified.")
+
+    st.subheader("Critical obligations")
+    obligations = report.get("obligations_summary", [])
+    if obligations:
+        for o in obligations:
+            st.markdown(f"- **{o.get('party','')}**: {', '.join(o.get('obligations', []))}")
+    else:
+        st.write("No obligations extracted.")
+
+    st.subheader("Missing standard clauses")
+    missing = report.get("missing_standard_clauses", [])
+    if missing:
+        st.write(", ".join(missing))
+    else:
+        st.write("None")
+
+    # Disclaimer
+    if report.get("disclaimer"):
+        st.caption(report.get("disclaimer"))
+
+    # Raw JSON (hidden by default)
+    with st.expander("Show raw JSON report"):
+        st.json(report)
 
 
 if do_demo:
