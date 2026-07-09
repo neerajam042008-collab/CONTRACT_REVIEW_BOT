@@ -70,13 +70,22 @@ SAMPLE_REPORT = {
 }
 
 
-# Lightweight CSS to improve visuals
+# Lightweight CSS to improve visuals (larger text, light accents)
 st.markdown(
     """
     <style>
-    .report-card {background:#ffffff;padding:18px;border-radius:12px;box-shadow:0 6px 24px rgba(15,23,42,0.06);}
-    .muted {color:#475569}
-    .badge {display:inline-block;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#0f172a;font-weight:700}
+    :root { --accent:#e6f4ff; --accent-2:#fff7ed; --muted:#4b5563; }
+    body, .stApp {font-size:16px;}
+    h1, .streamlit-expanderHeader {font-size:28px;}
+    h2, .stMarkdown h2 {font-size:22px;}
+    .report-card {background:#ffffff;padding:20px;border-radius:12px;box-shadow:0 6px 20px rgba(15,23,42,0.05);}
+    .muted {color:var(--muted);}
+    .badge {display:inline-block;padding:6px 10px;border-radius:999px;background:var(--accent);color:#0f172a;font-weight:700}
+    .exec-summary {background:var(--accent);padding:12px;border-radius:10px;margin-bottom:12px}
+    .risk-low {background:#ecfdf5;color:#064e3b;padding:6px 8px;border-radius:6px}
+    .risk-medium {background:#fff7ed;color:#92400e;padding:6px 8px;border-radius:6px}
+    .risk-high {background:#fff1f2;color:#7f1d1d;padding:6px 8px;border-radius:6px}
+    .large-text {font-size:18px;}
     </style>
     """,
     unsafe_allow_html=True,
@@ -97,12 +106,22 @@ else:
 # If demo flag is present, prefill with SAMPLE_TEXT; otherwise leave empty.
 initial_text = SAMPLE_TEXT if q.get("demo") == ["1"] else ""
 
-text_input = st.text_area("Contract text", value=initial_text, height=300)
+def _on_text_change():
+    st.session_state.auto_review = True
+
+# Use a named key so we can reference the textarea state reliably
+if "contract_text" not in st.session_state:
+    st.session_state.contract_text = initial_text
+
+text_area = st.text_area("Contract text", value=st.session_state.contract_text, height=340, key="contract_text", on_change=_on_text_change)
 
 uploaded_file = st.file_uploader("Or upload a text file", type=["txt", "md"])
 if uploaded_file is not None:
     try:
-        text_input = uploaded_file.read().decode("utf-8")
+        content = uploaded_file.read().decode("utf-8")
+        st.session_state.contract_text = content
+        # Trigger auto-review when a file is uploaded
+        st.session_state.auto_review = True
     except UnicodeDecodeError:
         st.error("Could not read the uploaded file as UTF-8 text.")
         st.stop()
@@ -210,8 +229,7 @@ elif do_clear:
         except Exception:
             pass
 
-elif do_review:
-    # If no keys are configured, fall back to demo report but warn the user.
+def perform_review(text_input):
     if not os.getenv("GROQ_API_KEY") and not os.getenv("OPENAI_API_KEY"):
         st.warning("No API key found. Showing demo analysis instead. Set GROQ_API_KEY or OPENAI_API_KEY to run the real pipeline.")
         render_report(SAMPLE_REPORT)
@@ -223,6 +241,14 @@ elif do_review:
                 render_report(report)
             except Exception as exc:
                 st.error(f"Review failed: {exc}")
+
+elif do_review:
+    perform_review(st.session_state.get("contract_text", ""))
+
+# If the text area changed (paste) or a file was uploaded, auto-review
+auto_flag = st.session_state.pop("auto_review", False)
+if auto_flag and st.session_state.get("contract_text", "").strip():
+    perform_review(st.session_state.get("contract_text", ""))
 
 else:
     st.info("Paste contract text or upload a file, then click Review contract, or click Use Demo Sample to load a demo report.")
