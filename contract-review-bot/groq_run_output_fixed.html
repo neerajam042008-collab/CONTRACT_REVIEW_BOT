@@ -3,143 +3,218 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Contract Review — Report</title>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
       :root{
-        --bg1:#ffffff; --bg2:#f7fafc; --card:#ffffff; --panel:#f1f5f9;
-        --accent:#2563eb; --accent-2:#7c3aed; --muted:#475569; --success:#16a34a; --danger:#dc2626; --warn:#f59e0b;
+        --bg1:#0a0d13; --bg2:#0d1119; --card:#12161f; --card-2:#171c27;
+        --border: rgba(232,236,244,0.08); --border-strong: rgba(232,236,244,0.16);
+        --text:#e7ebf3; --muted:#8b93a7; --muted-2:#5c6577;
+        --accent:#5b9dff; --accent-2:#8f7cff;
+        --risk-high:#e0556f; --risk-med:#d4a24c; --risk-low:#3fb893;
+        --shadow: 0 20px 50px rgba(0,0,0,0.35); --radius: 14px;
       }
+      html.light{
+        --bg1:#f6f4ef; --bg2:#efece3; --card:#ffffff; --card-2:#faf9f5;
+        --border: rgba(20,20,20,0.09); --border-strong: rgba(20,20,20,0.16);
+        --text:#171a1e; --muted:#5a5f6b; --muted-2:#848994;
+        --accent:#2b5fd9; --accent-2:#6d4fd9;
+        --risk-high:#c23350; --risk-med:#a8752a; --risk-low:#1f8f68;
+        --shadow: 0 20px 50px rgba(20,20,20,0.08);
+      }
+      *{box-sizing:border-box}
       html,body{height:100%;}
       body{
-        margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-        background:linear-gradient(180deg,var(--bg1),var(--bg2)); color:#0b1723; -webkit-font-smoothing:antialiased;
-        padding:32px; box-sizing:border-box;
+        margin:0; font-family:'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+        background:
+          radial-gradient(1200px 500px at 15% -10%, rgba(91,157,255,0.10), transparent 60%),
+          radial-gradient(900px 500px at 100% 0%, rgba(143,124,255,0.08), transparent 55%),
+          linear-gradient(180deg,var(--bg1),var(--bg2));
+        color:var(--text); -webkit-font-smoothing:antialiased;
+        padding:28px; transition:background .3s ease, color .3s ease;
       }
       .container{max-width:1200px;margin:0 auto;}
-      header{display:flex;align-items:center;gap:18px;margin-bottom:28px}
-      .logo{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:white;text-transform:uppercase;letter-spacing:.06em;box-shadow:0 12px 30px rgba(37,99,235,0.12)}
-      h1{font-size:30px;margin:0}
-      .subtitle{color:var(--muted);font-size:15px}
-
-      .grid{display:grid;grid-template-columns:1fr 360px;gap:24px}
-      aside{width:100%;}
-      .card{background:var(--card);border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(15,23,42,0.06);border:1px solid rgba(15,23,42,0.04);} 
-
-      .section-title{font-size:14px;color:#0b1723;margin-bottom:10px;font-weight:700;letter-spacing:0.02em}
-      pre.json{background:var(--panel);padding:18px;border-radius:14px;color:#0b1723;overflow:auto;font-size:13px;line-height:1.6;min-height:140px}
-
-      .badge{display:inline-block;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.95);color:#0f172a;font-size:13px;font-weight:700;box-shadow:0 10px 24px rgba(15,23,42,0.08)}
-
-      .parties li, .clauses-list li, .risks li, .missing-clauses li, .obligations-list li{color:#0f172a}
-      .parties li{margin-bottom:10px}
-      .clauses-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
-      .missing-clauses, .obligations-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
-      .card{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 10px 30px rgba(15,23,42,0.06);min-height:180px;color:#0b1723}
-      aside .card{min-height:140px;color:#0b1723}
-      .card, .card *{color:#0b1723}
-      .meta{color:#475569}
-      .clause{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:10px;background:rgba(11,23,35,0.03);color:#0b1723}
-      .clause .dot{width:10px;height:10px;border-radius:50%;margin-top:6px}
-      .sev-high{background:var(--danger)} .sev-med{background:var(--warn)} .sev-low{background:var(--muted)}
-      .clause .meta{font-size:12px;color:#475569}
-
-      .risks li{margin-bottom:12px;padding:10px;border-radius:8px;background:linear-gradient(90deg, rgba(255,255,255,0.9), rgba(255,255,255,0.85));border:1px solid rgba(15,23,42,0.03)}
-      .risk-severity{font-weight:700;padding:4px 8px;border-radius:6px;color:#061025}
-      .risk-high{background:var(--danger)} .risk-med{background:var(--warn)} .risk-low{background:var(--success)}
-
-      footer{margin-top:18px;color:var(--muted);font-size:13px}
-      .controls .badge{cursor:pointer}
-      .hero{display:flex;align-items:center;gap:24px;margin-bottom:18px}
-      .hero .title{font-size:20px;font-weight:800}
-      .muted-box{background:var(--panel);padding:12px;border-radius:10px}
-      @media (max-width:900px){.grid{grid-template-columns:1fr}.card{padding:12px}}
+      header{display:flex;align-items:center;gap:16px;margin-bottom:22px}
+      .logo{
+        width:52px;height:52px;border-radius:14px;flex-shrink:0;
+        background:linear-gradient(150deg,var(--accent),var(--accent-2));
+        display:flex;align-items:center;justify-content:center;color:white;
+        box-shadow:0 12px 28px rgba(91,157,255,0.25);
+      }
+      h1{font-family:'Fraunces',serif;font-weight:600;font-size:24px;margin:0;letter-spacing:-0.01em}
+      .subtitle{color:var(--muted);font-size:13px;margin-top:2px}
+      .controls{display:flex;gap:8px;align-items:center;margin-left:auto;flex-wrap:wrap}
+      .icon-btn{
+        display:inline-flex;align-items:center;gap:6px;padding:9px 13px;border-radius:10px;
+        background:var(--card);border:1px solid var(--border);color:var(--muted);
+        font-size:12.5px;font-weight:600;cursor:pointer;transition:.15s ease;font-family:inherit;
+      }
+      .icon-btn:hover{border-color:var(--border-strong);color:var(--text);transform:translateY(-1px)}
+      .icon-btn svg{width:15px;height:15px;stroke:currentColor;flex-shrink:0}
+      .type-badge{
+        padding:9px 14px;border-radius:10px;background:var(--card-2);border:1px solid var(--border);
+        font-size:12.5px;font-weight:600;color:var(--text);
+      }
+      .grid{display:grid;grid-template-columns:1fr 360px;gap:20px;position:relative}
+      .grid::before{
+        content:'';position:absolute;left:calc(100% - 381px);top:0;bottom:0;width:0;
+        border-left:1px dashed var(--border-strong);
+      }
+      .card{
+        background:var(--card);border-radius:var(--radius);padding:20px;
+        box-shadow:var(--shadow);border:1px solid var(--border);
+      }
+      .stack > .card + .card{margin-top:14px}
+      .section-title{
+        font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);
+        margin-bottom:14px;font-weight:700;display:flex;align-items:center;gap:8px;
+      }
+      .section-title svg{width:15px;height:15px;stroke:var(--accent)}
+      .exec-summary{
+        margin:0 0 16px 0;color:var(--text);background:var(--card-2);padding:18px;border-radius:12px;
+        border:1px solid var(--border);min-height:60px;font-size:14px;line-height:1.6;
+      }
+      .counts{display:flex;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+      .count-chip{
+        padding:8px 13px;border-radius:9px;background:var(--card-2);border:1px solid var(--border);
+        font-size:12.5px;color:var(--muted);font-weight:600;display:flex;gap:6px;align-items:center;
+      }
+      .count-chip svg{width:13px;height:13px}
+      pre.json{background:var(--card-2);padding:16px;border-radius:12px;color:var(--text);overflow:auto;
+        font-size:12px;line-height:1.6;font-family:'JetBrains Mono',monospace;border:1px solid var(--border)}
+      .parties, .clauses-list, .risks, .missing-clauses, .obligations-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+      .parties li{padding:10px 12px;border-radius:10px;background:var(--card-2);border:1px solid var(--border)}
+      .parties .name{font-weight:600;font-size:13.5px}
+      .meta{color:var(--muted);font-size:12px;margin-top:2px}
+      .clause{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:10px;background:var(--card-2);border:1px solid var(--border)}
+      .clause .dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0}
+      .sev-high{background:var(--risk-high)} .sev-med{background:var(--risk-med)} .sev-low{background:var(--muted-2)}
+      .clause .name{font-weight:600;font-size:13px}
+      .clause .quote{margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);
+        border-left:2px solid var(--border-strong);padding-left:9px;line-height:1.5}
+      .risks li{padding:12px;border-radius:10px;background:var(--card-2);border:1px solid var(--border)}
+      .risk-severity{font-weight:700;padding:3px 9px;border-radius:6px;color:#0a0d13;font-size:11px;text-transform:uppercase;letter-spacing:.03em}
+      .risk-high{background:var(--risk-high);color:white} .risk-med{background:var(--risk-med)} .risk-low{background:var(--risk-low);color:white}
+      .risk-quote{margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);
+        border-left:2px solid var(--risk-high);padding-left:9px;line-height:1.5}
+      .risk-action{margin-top:8px;color:var(--muted);font-size:12.5px;line-height:1.5}
+      .obligations-list li{padding:11px 12px;border-radius:10px;background:var(--card-2);border:1px solid var(--border)}
+      .missing-clauses li{padding:10px 12px;border-radius:10px;background:var(--card-2);border:1px solid var(--border);
+        display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+      .missing-clauses li svg{width:14px;height:14px;stroke:var(--risk-med);flex-shrink:0}
+      .empty-note{color:var(--muted-2);font-size:12.5px;padding:8px 2px}
+      .empty-state{padding:40px 20px;text-align:center;color:var(--muted)}
+      .empty-state svg{width:36px;height:36px;stroke:var(--muted-2);margin-bottom:12px}
+      footer{margin-top:18px;color:var(--muted);font-size:12.5px;display:flex;gap:8px;align-items:flex-start;
+        padding:14px 16px;border:1px dashed var(--border-strong);border-radius:12px;background:var(--card)}
+      footer svg{width:15px;height:15px;stroke:var(--risk-med);flex-shrink:0;margin-top:1px}
+      @media (max-width:900px){.grid{grid-template-columns:1fr}.grid::before{display:none}.card{padding:16px}}
     </style>
   </head>
   <body>
     <div class="container">
       <header>
-        <div class="logo">CR</div>
-        <div>
-          <h1>Contract Review</h1>
-          <div class="subtitle">AI-assisted contract review — demo and exportable reports</div>
+        <div class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6M9 16h4M14 3v5h5"/><path d="M6 3h8l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"/></svg>
         </div>
-        <div style="margin-left:auto;display:flex;gap:10px;align-items:center" class="controls">
-          <button id="btn-refresh" class="badge" title="Reload report">Refresh</button>
-          <button id="btn-copy" class="badge" title="Copy JSON to clipboard">Copy</button>
-          <button id="btn-download" class="badge" title="Download JSON">Download</button>
-          <button id="btn-toggle-raw" class="badge" title="Toggle raw JSON view">Show Raw</button>
-          <span id="contract-type" class="badge">Loading…</span>
+        <div>
+          <h1>Redline</h1>
+          <div class="subtitle">Contract review report</div>
+        </div>
+        <div class="controls">
+          <button id="btn-theme" class="icon-btn" title="Toggle theme">
+            <svg id="theme-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+            <span id="theme-label">Dark</span>
+          </button>
+          <button id="btn-copy" class="icon-btn" title="Copy JSON">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          </button>
+          <button id="btn-download" class="icon-btn" title="Download JSON">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+          </button>
+          <button id="btn-toggle-raw" class="icon-btn" title="Toggle raw JSON">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+            <span id="raw-label">Raw</span>
+          </button>
+          <span id="contract-type" class="type-badge">—</span>
         </div>
       </header>
 
       <div class="grid">
         <main class="card" id="main-card">
-          <div class="hero">
-            <div>
-              <div class="title">Paste or upload a contract to analyze</div>
-              <div class="muted">Quick demo available — use the sample to try the UI.</div>
+          <div class="section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+            Executive Summary
+          </div>
+          <div id="exec-summary" class="exec-summary">Waiting for analysis…</div>
+
+          <div class="counts">
+            <div class="count-chip" id="parties-count"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Parties: —</div>
+            <div class="count-chip" id="clauses-count"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>Clauses: —</div>
+            <div class="count-chip" id="risks-count"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>Risks: —</div>
+          </div>
+
+          <div id="raw-panel" style="display:none;margin-top:14px">
+            <div class="section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+              Raw JSON
             </div>
-            <div style="margin-left:auto" class="muted-box">Export: <strong>JSON</strong></div>
-          </div>
-          <div class="section-title">Contract Text</div>
-          <textarea id="json-input" rows="8" style="width:100%;border-radius:18px;border:1px solid rgba(148,163,184,0.25);background:#ffffff;color:#0b1723;padding:18px;resize:vertical;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;" placeholder="Paste contract text here to analyze its key clauses and risks."></textarea>
-          <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-            <button id="btn-load-input" class="badge" style="background:linear-gradient(135deg,var(--accent),var(--accent-2));color:white;">Analyze Text</button>
-            <button id="btn-demo" class="badge" style="background:#10b981;color:white;">Use Demo Sample</button>
-            <button id="btn-clear" class="badge" style="background:#64748b;color:white;">Clear</button>
-            <input id="file-input" type="file" accept="text/plain,.txt" style="display:none" />
-            <button id="btn-use-file" class="badge" style="background:linear-gradient(135deg,#f59e0b,#f97316);color:white;">Load Text File</button>
-          </div>
-
-          <div class="section-title">Executive Summary</div>
-          <div id="exec-summary" style="margin-bottom:16px;color:#0b1723;background:rgba(148,163,184,0.08);padding:20px;border-radius:20px;min-height:120px;box-shadow:inset 0 0 0 1px rgba(148,163,184,0.16);">Sample report summary is displayed using the default data. Paste contract text to analyze its key clauses and risks.</div>
-
-          <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
-            <div class="badge" id="parties-count">Parties: —</div>
-            <div class="badge" id="clauses-count">Clauses: —</div>
-            <div class="badge" id="risks-count">Risks: —</div>
-          </div>
-
-          <div id="raw-panel" style="display:none">
-            <div class="section-title">Raw JSON</div>
             <pre class="json" id="raw-json"></pre>
           </div>
         </main>
 
-        <aside>
+        <aside class="stack">
           <div class="card">
-            <div class="section-title">Parties</div>
+            <div class="section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Parties
+            </div>
             <ul class="parties" id="parties"></ul>
           </div>
-
-          <div class="card" style="margin-top:12px">
-            <div class="section-title">Clauses</div>
+          <div class="card">
+            <div class="section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+              Clauses
+            </div>
             <ul class="clauses-list" id="clauses"></ul>
           </div>
-
-          <div class="card" style="margin-top:12px">
-            <div class="section-title">Risks</div>
+          <div class="card">
+            <div class="section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0ZM12 9v4M12 17h.01"/></svg>
+              Risks
+            </div>
             <ul class="risks" id="risks"></ul>
           </div>
-
-          <div class="card" style="margin-top:12px">
-            <div class="section-title">Critical Obligations</div>
+          <div class="card">
+            <div class="section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              Critical Obligations
+            </div>
             <ul class="obligations-list" id="obligations"></ul>
           </div>
-
-          <div class="card" style="margin-top:12px">
-            <div class="section-title">Missing Clauses</div>
+          <div class="card">
+            <div class="section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+              Missing Clauses
+            </div>
             <ul class="missing-clauses" id="missing-clauses"></ul>
           </div>
         </aside>
       </div>
 
-      <footer id="disclaimer">Loading disclaimer…</footer>
+      <footer>
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0ZM12 9v4M12 17h.01"/></svg>
+        <span id="disclaimer">This analysis is AI-generated for informational purposes only and does not constitute legal advice.</span>
+      </footer>
     </div>
 
-
     <script>
+      // ---- DATA INJECTION POINT ----
+      // Your Python/Streamlit code calls the Anthropic API, then does:
+      //   html = TEMPLATE.replace("__DATA_JSON__", json.dumps(result))
+      // If there's no analysis yet, replace it with the literal string "null".
+      const DATA = __DATA_JSON__;
+
       const rawJsonEl = document.getElementById('raw-json');
       const contractTypeEl = document.getElementById('contract-type');
       const execSummaryEl = document.getElementById('exec-summary');
@@ -153,187 +228,112 @@
       const missingClausesEl = document.getElementById('missing-clauses');
       const disclaimerEl = document.getElementById('disclaimer');
       const rawPanel = document.getElementById('raw-panel');
-
       let currentData = null;
       let rawVisible = false;
-      const sampleData = {
-        "contract_type": "Mutual Non-Disclosure Agreement",
-        "parties": [
-          {"name": "Acme Robotics Inc.", "role": "a Delaware corporation"},
-          {"name": "Beta Logistics LLC", "role": "a California limited liability company"}
-        ],
-        "clauses": [
-          {"type": "term_and_termination","present": true,"quoted_text": "This Agreement shall remain in effect for a period of two (2) years from the Effective Date, unless earlier terminated by either party upon thirty (30) days written notice.","location": "3. Term","confidence": "high"},
-          {"type": "payment_terms","present": false,"quoted_text": null,"location": null,"confidence": "low"},
-          {"type": "liability_and_indemnification","present": true,"quoted_text": "Beta agrees to indemnify, defend, and hold harmless Acme from any and all claims, damages, losses, and expenses (including attorneys' fees) arising out of or related to Beta's breach of this Agreement, without any limitation on the amount of such liability.","location": "4. Indemnification","confidence": "high"},
-          {"type": "confidentiality","present": true,"quoted_text": "Each party agrees to hold in strict confidence all non-public information disclosed by the other party, whether oral or written, and to use such information solely for the purpose of evaluating the potential business relationship.","location": "2. Confidential Information","confidence": "high"},
-          {"type": "intellectual_property","present": true,"quoted_text": "Nothing in this Agreement shall be construed as granting any license or rights to either party's intellectual property.","location": "7. No License","confidence": "high"},
-          {"type": "non_compete_non_solicit","present": false,"quoted_text": null,"location": null,"confidence": "low"},
-          {"type": "dispute_resolution_and_governing_law","present": true,"quoted_text": "This Agreement shall be governed by the laws of the State of Delaware. Any disputes arising under this Agreement shall be resolved exclusively in the state or federal courts located in Delaware.","location": "5. Governing Law","confidence": "high"},
-          {"type": "auto_renewal","present": true,"quoted_text": "This Agreement shall automatically renew for successive one (1) year terms unless either party provides written notice of non-renewal at least sixty (60) days prior to the end of the then-current term.","location": "3. Term","confidence": "high"},
-          {"type": "force_majeure","present": false,"quoted_text": null,"location": null,"confidence": "low"}
-        ],
-        "risks": [
-          {"related_clause": "liability_and_indemnification","quoted_text": "without any limitation on the amount of such liability","issue": "uncapped/unlimited liability","severity": "high","suggested_action": "This clause may warrant review by a licensed attorney because it could lead to significant financial exposure for Beta."},
-          {"related_clause": "auto_renewal","quoted_text": "unless either party provides written notice of non-renewal at least sixty (60) days prior to the end of the then-current term","issue": "auto-renewal without adequate notice","severity": "medium","suggested_action": "Consider negotiating a longer notice period to ensure sufficient time for review and decision-making."}
-        ],
-        "obligations_summary": [
-          {"party": "Acme Robotics Inc.","obligations": ["Hold in strict confidence all non-public information disclosed by Beta Logistics LLC","Use disclosed information solely for evaluating the potential business relationship"]},
-          {"party": "Beta Logistics LLC","obligations": ["Indemnify, defend, and hold harmless Acme Robotics Inc. from claims arising out of Beta's breach of the Agreement","Hold in strict confidence all non-public information disclosed by Acme Robotics Inc.","Use disclosed information solely for evaluating the potential business relationship","Provide written notice of non-renewal at least sixty (60) days prior to the end of the then-current term if Beta does not want the Agreement to automatically renew"]}
-        ],
-        "missing_standard_clauses": ["payment_terms","non_compete_non_solicit","force_majeure"],
-        "executive_summary": "{\n  \"summary\": \"This Mutual Non-Disclosure Agreement between Acme Robotics Inc. and Beta Logistics LLC has several key clauses, including term and termination, liability and indemnification, confidentiality, intellectual property, and dispute resolution. High-severity risks include uncapped liability for Beta and auto-renewal without adequate notice. Critically missing clauses include payment terms, non-compete/non-solicit, and force majeure. These clauses and risks may warrant review by a licensed attorney.\"\n}",
-        "disclaimer": "This analysis is generated by an AI system for informational purposes only and does not constitute legal advice. Consult a licensed attorney before making decisions based on this contract."
-      };
 
-      function loadReport(){
-        currentData = sampleData;
-        document.getElementById('json-input').value = JSON.stringify(sampleData, null, 2);
-        render(sampleData);
-      }
+      function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
 
       function render(data){
+        currentData = data;
         contractTypeEl.textContent = data.contract_type || '—';
-        disclaimerEl.textContent = data.disclaimer || '';
+        if(data.disclaimer) disclaimerEl.textContent = data.disclaimer;
 
         try{
           const exec = JSON.parse(data.executive_summary || '{}');
           execSummaryEl.textContent = exec.summary || data.executive_summary || '';
         }catch(e){ execSummaryEl.textContent = data.executive_summary || ''; }
 
-        partiesCountEl.textContent = `Parties: ${data.parties?.length ?? 0}`;
-        clausesCountEl.textContent = `Clauses: ${data.clauses?.length ?? 0}`;
-        risksCountEl.textContent = `Risks: ${data.risks?.length ?? 0}`;
+        partiesCountEl.innerHTML = partiesCountEl.querySelector('svg').outerHTML + `Parties: ${data.parties?.length ?? 0}`;
+        clausesCountEl.innerHTML = clausesCountEl.querySelector('svg').outerHTML + `Clauses: ${data.clauses?.length ?? 0}`;
+        risksCountEl.innerHTML = risksCountEl.querySelector('svg').outerHTML + `Risks: ${data.risks?.length ?? 0}`;
 
         rawJsonEl.textContent = JSON.stringify(data, null, 2);
 
         partiesEl.innerHTML = '';
         (data.parties || []).forEach(p => {
           const li = document.createElement('li');
-          li.innerHTML = `<strong>${escapeHtml(p.name)}</strong><div class="meta">${escapeHtml(p.role||'')}</div>`;
+          li.innerHTML = `<div class="name">${escapeHtml(p.name)}</div><div class="meta">${escapeHtml(p.role||'')}</div>`;
           partiesEl.appendChild(li);
         });
+        if(!(data.parties||[]).length) partiesEl.innerHTML = '<div class="empty-note">No parties identified.</div>';
 
         clausesEl.innerHTML = '';
         (data.clauses || []).forEach(c => {
           const li = document.createElement('li'); li.className='clause';
           const dot = document.createElement('div'); dot.className='dot ' + (c.present? (c.confidence==='high'? 'sev-high':'sev-med') : 'sev-low');
           const body = document.createElement('div');
-          const clauseName = escapeHtml(c.type.replace(/_/g,' ').replace(/\b\w/g, ch => ch.toUpperCase()));
-          body.innerHTML = `<div style="font-weight:700; color:#0b1723">${clauseName}</div><div class="meta">${c.present? 'Present' : 'Not present'} — ${escapeHtml(c.location||'—')}</div><div style="margin-top:6px;color:#0b1723">${c.quoted_text? '"'+escapeHtml(c.quoted_text)+'"' : ''}</div>`;
+          const clauseName = escapeHtml(String(c.type||'').replace(/_/g,' ').replace(/\b\w/g, ch => ch.toUpperCase()));
+          body.innerHTML = `<div class="name">${clauseName}</div><div class="meta">${c.present? 'Present' : 'Not present'} — ${escapeHtml(c.location||'—')}</div>${c.quoted_text? `<div class="quote">"${escapeHtml(c.quoted_text)}"</div>` : ''}`;
           li.appendChild(dot); li.appendChild(body); clausesEl.appendChild(li);
         });
+        if(!(data.clauses||[]).length) clausesEl.innerHTML = '<div class="empty-note">No clauses detected.</div>';
 
         risksEl.innerHTML = '';
         (data.risks || []).forEach(r => {
           const li = document.createElement('li');
           const sev = (r.severity||'low').toLowerCase();
           const sevClass = sev==='high'? 'risk-high' : sev==='medium'? 'risk-med' : 'risk-low';
-          li.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div><strong>${escapeHtml(r.issue)}</strong><div class="meta">Related to: ${escapeHtml(r.related_clause)}</div></div><div class="risk-severity ${sevClass}">${escapeHtml(r.severity)}</div></div><div style="margin-top:8px;color:#0b1723">${r.quoted_text? '"'+escapeHtml(r.quoted_text)+'"' : ''}</div><div style="margin-top:8px;color:var(--muted);margin-top:10px">${escapeHtml(r.suggested_action || '')}</div>`;
+          li.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px"><div><strong style="font-size:13.5px">${escapeHtml(r.issue||'')}</strong><div class="meta">Related to: ${escapeHtml(r.related_clause||'')}</div></div><div class="risk-severity ${sevClass}">${escapeHtml(r.severity||'')}</div></div>${r.quoted_text? `<div class="risk-quote">"${escapeHtml(r.quoted_text)}"</div>` : ''}<div class="risk-action">${escapeHtml(r.suggested_action || '')}</div>`;
           risksEl.appendChild(li);
         });
+        if(!(data.risks||[]).length) risksEl.innerHTML = '<div class="empty-note">No notable risks flagged.</div>';
 
         obligationsEl.innerHTML = '';
         (data.obligations_summary || []).forEach(o => {
           const li = document.createElement('li');
-          li.innerHTML = `<strong>${escapeHtml(o.party)}</strong><div class="meta">${escapeHtml((o.obligations || []).join(' • '))}</div>`;
+          li.innerHTML = `<div class="name" style="font-weight:600;font-size:13px">${escapeHtml(o.party)}</div><div class="meta">${escapeHtml((o.obligations || []).join(' • '))}</div>`;
           obligationsEl.appendChild(li);
         });
+        if(!(data.obligations_summary||[]).length) obligationsEl.innerHTML = '<div class="empty-note">No obligations extracted.</div>';
 
         missingClausesEl.innerHTML = '';
         (data.missing_standard_clauses || []).forEach(clause => {
           const li = document.createElement('li');
-          li.innerHTML = `<strong>${escapeHtml(clause.replace(/_/g,' '))}</strong>`;
+          li.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>${escapeHtml(String(clause).replace(/_/g,' '))}</span>`;
           missingClausesEl.appendChild(li);
         });
+        if(!(data.missing_standard_clauses||[]).length) missingClausesEl.innerHTML = '<div class="empty-note">No standard clauses missing.</div>';
       }
 
-      function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+      function showEmptyState(){
+        execSummaryEl.textContent = 'No analysis yet — submit a contract from the app to see the report here.';
+      }
 
-      document.getElementById('btn-refresh').addEventListener('click', ()=> loadReport());
       document.getElementById('btn-toggle-raw').addEventListener('click', ()=>{
         rawVisible = !rawVisible;
         rawPanel.style.display = rawVisible ? 'block' : 'none';
-        document.getElementById('btn-toggle-raw').textContent = rawVisible ? 'Hide Raw' : 'Show Raw';
-      });
-
-      document.getElementById('btn-demo').addEventListener('click', ()=>{
-        document.getElementById('json-input').value = JSON.stringify(sampleData, null, 2);
-        currentData = sampleData;
-        render(sampleData);
-        execSummaryEl.textContent = 'Loaded demo sample analysis.';
-      });
-
-      document.getElementById('btn-clear').addEventListener('click', ()=>{
-        document.getElementById('json-input').value = '';
-        currentData = null;
-        contractTypeEl.textContent = '—';
-        execSummaryEl.textContent = 'Paste contract text or upload a file, then click Analyze.';
-        partiesEl.innerHTML = '';
-        clausesEl.innerHTML = '';
-        risksEl.innerHTML = '';
-        obligationsEl.innerHTML = '';
-        missingClausesEl.innerHTML = '';
-        rawJsonEl.textContent = '';
-        partiesCountEl.textContent = 'Parties: —';
-        clausesCountEl.textContent = 'Clauses: —';
-        risksCountEl.textContent = 'Risks: —';
-        disclaimerEl.textContent = '';
+        document.getElementById('raw-label').textContent = rawVisible ? 'Hide' : 'Raw';
       });
 
       document.getElementById('btn-copy').addEventListener('click', async ()=>{
-        if(!currentData) return; await navigator.clipboard.writeText(JSON.stringify(currentData, null, 2));
-        document.getElementById('btn-copy').textContent = 'Copied'; setTimeout(()=>document.getElementById('btn-copy').textContent='Copy',1200);
+        if(!currentData) return;
+        await navigator.clipboard.writeText(JSON.stringify(currentData, null, 2));
+        const btn = document.getElementById('btn-copy');
+        const original = btn.innerHTML;
+        btn.textContent = 'Copied';
+        setTimeout(()=>btn.innerHTML = original, 1200);
       });
 
       document.getElementById('btn-download').addEventListener('click', ()=>{
-        if(!currentData) return; const blob = new Blob([JSON.stringify(currentData, null, 2)],{type:'application/json'});
-        const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'groq_run_output.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+        if(!currentData) return;
+        const blob = new Blob([JSON.stringify(currentData, null, 2)],{type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'contract_review_output.json';
+        document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
       });
 
-      document.getElementById('btn-load-input').addEventListener('click', ()=>{
-        const text = document.getElementById('json-input').value.trim();
-        if(!text){
-          alert('Please paste contract text first.');
-          return;
-        }
-        try{
-          const data = JSON.parse(text);
-          currentData = data;
-          render(data);
-        }catch(e){
-          currentData = {...sampleData};
-          currentData.contract_text = text;
-          render(currentData);
-          execSummaryEl.textContent = 'Contract text loaded; displaying sample analysis for the provided text.';
-        }
+      const themeBtn = document.getElementById('btn-theme');
+      const themeIcon = document.getElementById('theme-icon');
+      const themeLabel = document.getElementById('theme-label');
+      const moonPath = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
+      const sunPath = '<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+      themeBtn.addEventListener('click', ()=>{
+        const isLight = document.documentElement.classList.toggle('light');
+        themeIcon.innerHTML = isLight ? sunPath : moonPath;
+        themeLabel.textContent = isLight ? 'Light' : 'Dark';
       });
 
-      const fileInput = document.getElementById('file-input');
-      document.getElementById('btn-use-file').addEventListener('click', ()=> fileInput.click());
-      fileInput.addEventListener('change', async (event) => {
-        const file = event.target.files[0];
-        if(!file) return;
-        try{
-          const text = await file.text();
-          document.getElementById('json-input').value = text;
-          try{
-            const data = JSON.parse(text);
-            currentData = data;
-            render(data);
-          }catch(e){
-            currentData = {...sampleData};
-            currentData.contract_text = text;
-            render(currentData);
-            execSummaryEl.textContent = 'Contract text file loaded; displaying sample analysis.';
-          }
-        }catch(e){
-          alert('Unable to read the file. Please select a valid text file.');
-        }
-      });
-
-      // initial load
-      loadReport();
+      if(DATA){ render(DATA); } else { showEmptyState(); }
     </script>
   </body>
 </html>
