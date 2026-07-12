@@ -21,8 +21,23 @@ if str(PROJECT_DIR) not in sys.path:
     sys.path.insert(0, str(PROJECT_DIR))
  
 load_dotenv(PROJECT_DIR / ".env")
- 
-from main import review_contract  # noqa: E402
+
+# Import `review_contract` directly from the `contract-review-bot/main.py`
+# file using importlib to avoid module path issues in different runtimes.
+import importlib.util
+
+MAIN_PATH = PROJECT_DIR / "main.py"
+if MAIN_PATH.exists():
+    spec = importlib.util.spec_from_file_location("contract_main", str(MAIN_PATH))
+    contract_main = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(contract_main)
+    review_contract = getattr(contract_main, "review_contract", None)
+else:
+    # Fallback to normal import if the file isn't found on disk
+    try:
+        from main import review_contract  # noqa: E402
+    except Exception:
+        review_contract = None
  
 st.set_page_config(page_title="Clause Whisperer", page_icon="📄", layout="wide")
  
