@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 import streamlit as st
+import streamlit.components.v1 as components
 try:
     from dotenv import load_dotenv
 except Exception:
@@ -24,8 +25,16 @@ from main import review_contract  # noqa: E402
 
 st.set_page_config(page_title="Contract Review Bot", page_icon="📄", layout="wide")
 
-st.title("Contract Review Bot")
-st.write("Upload a contract or paste the text to get a structured review.")
+HTML_PATH = PROJECT_DIR / "groq_run_output_fixed.html"
+
+try:
+    html_content = HTML_PATH.read_text(encoding="utf-8")
+except FileNotFoundError:
+    html_content = "<p>Unable to load HTML template.</p>"
+
+# Render the new HTML content using Streamlit components to avoid modifying the HTML file.
+components.html(html_content, height=1000, scrolling=True)
+st.stop()
 
 with st.sidebar:
     st.header("Setup")
