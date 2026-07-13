@@ -9,8 +9,6 @@ import streamlit.components.v1 as components
 try:
     from dotenv import load_dotenv
 except Exception:
-    # If python-dotenv isn't installed in the environment (e.g. on Streamlit Cloud),
-    # provide a no-op fallback so the app can still run using real environment vars
     def load_dotenv(*args, **kwargs):
         return False
 
@@ -31,8 +29,6 @@ except ModuleNotFoundError:
 
 st.set_page_config(page_title="Clause Whisperer", page_icon="📄", layout="wide")
 
-# The HTML template — keeping your existing filename/path, just with the
-# redesigned dark-mode content (paste the template contents into this file).
 TEMPLATE_PATH = PROJECT_DIR / "groq_run_output_fixed.html"
 try:
     HTML_TEMPLATE = TEMPLATE_PATH.read_text(encoding="utf-8")
@@ -93,31 +89,94 @@ SAMPLE_REPORT = {
 if "contract_text" not in st.session_state:
     st.session_state.contract_text = ""
 if "report" not in st.session_state:
-    st.session_state.report = SAMPLE_REPORT
+    st.session_state.report = None
+if "theme" not in st.session_state:
+    st.session_state.theme = "dark"
 
-# Text input for contract
-st.text_area("Contract text", height=200, key="contract_text")
+is_light = st.session_state.theme == "light"
 
-# Styling for buttons inside report
+if is_light:
+    _bg = "linear-gradient(180deg,#f6f4ef,#efece3)"
+    _card_bg = "#faf9f5"
+    _border = "rgba(20,20,20,0.12)"
+    _text = "#171a1e"
+else:
+    _bg = "linear-gradient(180deg,#0a0d13,#0d1119)"
+    _card_bg = "#12161f"
+    _border = "rgba(232,236,244,0.12)"
+    _text = "#e7ebf3"
+
 st.markdown(
-    """
+    f"""
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-    .stButton>button[kind="primary"] {
-        background: linear-gradient(135deg,#5b9dff,#8f7cff) !important;
-        border: none !important;
-        color: white !important;
-        width: 48%;
-        display: inline-block;
-        margin-right: 2%;
-    }
+    [data-testid="stAppViewContainer"], .stApp {{ background:{_bg} !important; }}
+    .block-container {{ padding-top: 2.2rem; max-width: 1200px; }}
+    h1,h2,h3,h4,h5,h6,p,label,span,div {{ color:{_text}; }}
+    div[data-testid="stFileUploaderDropzone"] {{
+        background-color:{_card_bg} !important;
+        border:1px dashed {_border} !important;
+        border-radius:12px !important;
+    }}
+    textarea {{
+        background-color:{_card_bg} !important;
+        border:1px solid {_border} !important;
+        border-radius:12px !important;
+        color:{_text} !important;
+        font-family:'JetBrains Mono','Courier New',monospace !important;
+    }}
+    textarea:focus {{ border-color:#5b9dff !important; box-shadow:none !important; }}
+    .stButton>button {{
+        border-radius:10px !important;
+        font-weight:600 !important;
+        border:1px solid {_border} !important;
+        background-color:{_card_bg} !important;
+        color:{_text} !important;
+    }}
+    div[data-testid="column"]:nth-of-type(1) .stButton>button {{
+        background:linear-gradient(135deg,#5b9dff,#8f7cff) !important;
+        border:none !important; color:white !important;
+    }}
+    div[data-testid="column"]:nth-of-type(2) .stButton>button {{
+        background:linear-gradient(135deg,#3fb893,#2f9b7d) !important;
+        border:none !important; color:white !important;
+    }}
+    div[data-testid="column"]:nth-of-type(3) .stButton>button {{
+        background-color:{_card_bg} !important; color:{_text} !important;
+        border:1px solid {_border} !important;
+    }}
+    div[data-testid="stExpander"] {{
+        background-color:{_card_bg} !important;
+        border:1px solid {_border} !important;
+        border-radius:12px !important;
+    }}
+    iframe {{ border:none !important; }}
     </style>
+
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:6px;">
+      <div style="width:52px;height:52px;border-radius:14px;flex-shrink:0;background:linear-gradient(150deg,#5b9dff,#8f7cff);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 28px rgba(91,157,255,0.25);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4 9 15"/><path d="M20 4 14 20l-3-6-6-3 15-7Z"/></svg>
+      </div>
+      <div>
+        <div style="font-family:'Fraunces',serif;font-weight:600;font-size:24px;color:{_text};">Clause Whisperer</div>
+        <div style="color:#8b93a7;font-size:13px;margin-top:2px;">AI-assisted contract review — paste a contract and get clauses, risks, and obligations.</div>
+      </div>
+    </div>
     """,
     unsafe_allow_html=True,
 )
 
-col1, col2 = st.columns([1, 1])
-do_review = col1.button("🔍 Review Contract", type="primary", use_container_width=True)
-do_demo = col2.button("✨ Use Sample Data (Demo)", type="primary", use_container_width=True)
+st.text_area("Contract text", height=220, key="contract_text")
+
+col1, col2, col3 = st.columns([1.4, 1.4, 1])
+do_review = col1.button("🔍 Review Contract", use_container_width=True)
+do_demo = col2.button("✨ Use Sample Data (Demo)", use_container_width=True)
+do_theme_toggle = col3.button("☀️ Light" if not is_light else "🌙 Dark", use_container_width=True)
+
+if do_theme_toggle:
+    st.session_state.theme = "light" if not is_light else "dark"
+    st.rerun()
+
 
 def run_review(text_input: str):
     if not text_input.strip():
@@ -138,19 +197,19 @@ def run_review(text_input: str):
         except Exception as exc:
             st.error(f"Review failed: {exc}")
 
+
 if do_demo:
+    st.session_state.contract_text = SAMPLE_TEXT
     st.session_state.report = SAMPLE_REPORT
     st.rerun()
 elif do_review:
     run_review(st.session_state.contract_text)
 
-# ---- render the report card ----
 report = st.session_state.report
 data_json = json.dumps(report) if report else "null"
-html = HTML_TEMPLATE.replace("__DATA_JSON__", data_json)
-components.html(html, height=1000, scrolling=True)
+html = HTML_TEMPLATE.replace("__THEME_CLASS__", "light" if is_light else "").replace("__DATA_JSON__", data_json)
+components.html(html, height=900, scrolling=True)
 
-# ---- reliable copy / download, native Streamlit widgets (not inside the iframe) ----
 if report:
     st.download_button(
         "⬇️ Download JSON report",
