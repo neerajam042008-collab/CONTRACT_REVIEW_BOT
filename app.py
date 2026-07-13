@@ -104,21 +104,8 @@ st.markdown(
 )
 
 # ---- session state ----
-if "contract_text" not in st.session_state:
-    st.session_state.contract_text = ""
 if "report" not in st.session_state:
     st.session_state.report = SAMPLE_REPORT
-
-# File upload
-uploaded_file = st.file_uploader("Or upload a text file", type=["txt", "md"])
-if uploaded_file is not None:
-    try:
-        st.session_state.contract_text = uploaded_file.read().decode("utf-8")
-    except UnicodeDecodeError:
-        st.error("Could not read the uploaded file as UTF-8 text.")
-        st.stop()
-
-st.text_area("Contract text", height=280, key="contract_text")
 
 col1, col2 = st.columns([1, 1])
 do_review = col1.button("🔍 Review Contract", type="primary", use_container_width=True)
@@ -147,7 +134,10 @@ if do_demo:
     st.session_state.report = SAMPLE_REPORT
     st.rerun()
 elif do_review:
-    run_review(st.session_state.contract_text)
+    if st.session_state.get("contract_text", "").strip():
+        run_review(st.session_state.contract_text)
+    else:
+        st.warning("Paste contract text first.")
 
 # ---- render the report card ----
 report = st.session_state.report
