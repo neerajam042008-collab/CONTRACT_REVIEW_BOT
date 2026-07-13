@@ -170,7 +170,12 @@ st.text_area("Contract text", height=220, key="contract_text")
 
 col1, col2, col3 = st.columns([1.4, 1.4, 1])
 do_review = col1.button("🔍 Review Contract", use_container_width=True)
-do_demo = col2.button("✨ Use Sample Data (Demo)", use_container_width=True)
+
+def _use_demo():
+    st.session_state.contract_text = SAMPLE_TEXT
+    st.session_state.report = SAMPLE_REPORT
+
+do_demo = col2.button("✨ Use Sample Data (Demo)", on_click=_use_demo, use_container_width=True)
 do_theme_toggle = col3.button("☀️ Light" if not is_light else "🌙 Dark", use_container_width=True)
 
 if do_theme_toggle:
@@ -201,11 +206,7 @@ def run_review(text_input: str):
             st.session_state.report = SAMPLE_REPORT
 
 
-if do_demo:
-    st.session_state.contract_text = SAMPLE_TEXT
-    st.session_state.report = SAMPLE_REPORT
-    st.rerun()
-elif do_review:
+if do_review:
     run_review(st.session_state.contract_text)
 
 report = st.session_state.report
