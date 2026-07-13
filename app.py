@@ -196,6 +196,9 @@ def run_review(text_input: str):
             st.success("Review completed.")
         except Exception as exc:
             st.error(f"Review failed: {exc}")
+            # Fallback to demo analysis so users can still see output
+            # when the external LLM call fails (rate limit, missing creds, etc.)
+            st.session_state.report = SAMPLE_REPORT
 
 
 if do_demo:
