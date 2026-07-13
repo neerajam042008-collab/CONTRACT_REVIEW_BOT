@@ -165,6 +165,11 @@ class MockLLM:
             except Exception:
                 clauses_json = {"clauses": []}
 
+            if isinstance(clauses_json, list):
+                clauses_json = {"clauses": clauses_json}
+            elif not isinstance(clauses_json, dict):
+                clauses_json = {"clauses": []}
+
             risks = []
             missing = [c["type"] for c in clauses_json.get("clauses", []) if not c.get("present")]
             body = {"risks": risks, "missing_standard_clauses": missing}
@@ -175,6 +180,10 @@ class MockLLM:
             try:
                 payload = json.loads(text.split("PARTIES AND CLAUSES (JSON):", 1)[-1].strip())
             except Exception:
+                payload = {"parties": [], "clauses": []}
+            if isinstance(payload, list):
+                payload = {"parties": [], "clauses": payload}
+            elif not isinstance(payload, dict):
                 payload = {"parties": [], "clauses": []}
             obligations = []
             for p in payload.get("parties", []):
