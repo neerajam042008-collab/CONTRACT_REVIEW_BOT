@@ -188,12 +188,10 @@ def run_review(text_input: str):
         st.warning("Paste contract text first.")
         return
     if not os.getenv("GROQ_API_KEY") and not os.getenv("OPENAI_API_KEY"):
-        st.warning(
-            "No API key found — showing demo analysis instead. "
+        st.info(
+            "No API key found — running offline MockLLM for analysis. "
             "Set GROQ_API_KEY or OPENAI_API_KEY to run the real pipeline."
         )
-        st.session_state.report = SAMPLE_REPORT
-        return
     with st.spinner("Reviewing contract…"):
         try:
             report = review_contract(text_input, doc_id="streamlit-run")
