@@ -158,7 +158,7 @@ st.markdown(
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4 9 15"/><path d="M20 4 14 20l-3-6-6-3 15-7Z"/></svg>
       </div>
       <div>
-        <div style="font-family:'Fraunces',serif;font-weight:600;font-size:24px;color:{_text};">Clause Whisperer</div>
+        <div style="font-family:'Fraunces',serif;font-weight:600;font-size:24px;color:{_text};display:none">Clause Whisperer</div>
         <div style="color:#8b93a7;font-size:13px;margin-top:2px;">AI-assisted contract review — paste a contract and get clauses, risks, and obligations.</div>
       </div>
     </div>
